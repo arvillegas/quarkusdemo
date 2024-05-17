@@ -1,8 +1,10 @@
 package org.acme.getting.started;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.acme.employee.model.Employee;
 import org.acme.employee.model.EmployeeWorkedHours;
 import org.acme.reports.service.WorkedHoursService;
@@ -25,9 +27,14 @@ public class EmployeeResource
     @Inject
     WorkedHoursService serviceWH;
 
+    @Transactional
     @POST
-    public void createEmployeeService(Employee employee) {
+    public Map<String, Object> createEmployeeService(Employee employee) {
+        Map<String, Object> result = new HashMap<>();
         service.createEmployee(employee);
+        result.put("id",employee.getId());
+        result.put("success",true);
+        return result;
     }
 
     @GET
