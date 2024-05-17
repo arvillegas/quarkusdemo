@@ -37,4 +37,9 @@ public class EmployeeService {
         return repository.findAll().stream().toList();
     }
 
+    public Employee getEmployeeId(Long Id) {
+
+        return repository.findById(Id);
+    }
+
 }

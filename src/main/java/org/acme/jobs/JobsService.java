@@ -17,4 +17,9 @@ public class JobsService {
         repository.persist(job);
     }
 
+    public Jobs getJobId(Long Id) {
+
+        return repository.findById(Id);
+    }
+
 }

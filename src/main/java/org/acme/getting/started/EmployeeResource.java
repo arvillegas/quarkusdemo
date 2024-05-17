@@ -7,6 +7,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.employee.model.Employee;
 import org.acme.employee.model.EmployeeWorkedHours;
+import org.acme.employee.model.Jobs;
+import org.acme.jobs.JobsService;
 import org.acme.reports.service.WorkedHoursService;
 import org.acme.thread.MultithreadingDemo;
 
@@ -26,6 +28,9 @@ public class EmployeeResource
 
     @Inject
     WorkedHoursService serviceWH;
+
+    @Inject
+    JobsService serviceJob;
 
     @Transactional
     @POST
@@ -60,7 +65,7 @@ public class EmployeeResource
     }
 
     @GET
-    @Path("/{id}/{fechaini}/{fechaFin}")
+    @Path("/hours/{id}/{fechaini}/{fechaFin}")
     public Map<String, Object> getHoursByEmployeeandDates(String id,String fechaini, String fechaFin) throws ParseException {
         Map<String, Object> hours = new HashMap<>();
         String pattern = "yyyy-MM-dd";
@@ -74,6 +79,33 @@ public class EmployeeResource
                 mapToInt(o -> o.getWorked_hours()).sum();
         hours.put("total_worked_hours",totalHors);
         if (totalHors > 5){
+            hours.put("success",true);
+        }else{
+            hours.put("success",false);
+        }
+
+
+        return hours;
+
+    }
+
+    @GET
+    @Path("/payment/{id}/{fechaini}/{fechaFin}")
+    public Map<String, Object> getPsymentByEmployeeandDates(String id,String fechaini, String fechaFin) throws ParseException {
+        Map<String, Object> hours = new HashMap<>();
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date dateIni = simpleDateFormat.parse(fechaini);
+        Date dateFin = simpleDateFormat.parse(fechaFin);
+        List<EmployeeWorkedHours> list = serviceWH.getWorkedHoursByEmpId(Long.parseLong(id));
+        Employee employee = service.getEmployeeId(Long.parseLong(id));
+        Jobs job = serviceJob.getJobId(employee.getJob_id());
+        double totalSalary = list.stream().
+                filter(c -> c.getWorked_date().after(dateIni)).
+                filter(c -> c.getWorked_date().before(dateFin)).
+                mapToInt(o -> o.getWorked_hours()).sum() * job.getSalary();
+        hours.put("payment",totalSalary);
+        if (totalSalary > 0){
             hours.put("success",true);
         }else{
             hours.put("success",false);
