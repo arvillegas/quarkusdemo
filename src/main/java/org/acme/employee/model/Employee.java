@@ -1,12 +1,14 @@
 package org.acme.employee.model;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 
 @Entity
 @Table(name = "employees")
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", unique = true)
@@ -17,7 +19,7 @@ public class Employee {
     private String lastname;
 
     @Column(name = "birthday")
-    private String birthday;
+    private Date birthday;
 
     public String getEstatus() {
         return estatus;
@@ -69,11 +71,11 @@ public class Employee {
         this.name = name;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
