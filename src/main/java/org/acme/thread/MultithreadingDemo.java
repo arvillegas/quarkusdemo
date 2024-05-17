@@ -10,19 +10,19 @@ import java.util.List;
 // Java code for thread creation by extending
 // the Thread class
 public class MultithreadingDemo extends Thread {
-    @Inject
-    EmployeeService employeeService;
+    // @Inject
+    // EmployeeService employeeService;
 
 
     public void run()
     {
         try {
-            List<Employee> employeeList =  employeeService.getEmployeeAll();
+            /*List<Employee> employeeList =  employeeService.getEmployeeAll();
             for (Employee emp: employeeList){
                 System.out.println(
                         "Employee " + getName()
                                 + " is active");
-            }
+            }*/
             System.out.println(
                     "Thread " + Thread.currentThread().getId()
                             + " is running");

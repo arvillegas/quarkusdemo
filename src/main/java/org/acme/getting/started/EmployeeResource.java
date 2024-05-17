@@ -79,7 +79,7 @@ public class EmployeeResource
 
     // Main Class
     @GET
-    @Path("/multithread/{num}/")
+    @Path("/multithread/{num}")
     public void getByJobGroupByLastName(Integer num) {
 
         int n = num; // Number of threads
