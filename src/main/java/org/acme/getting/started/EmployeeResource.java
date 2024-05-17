@@ -8,6 +8,8 @@ import org.acme.employee.model.EmployeeWorkedHours;
 import org.acme.reports.service.WorkedHoursService;
 import org.acme.thread.MultithreadingDemo;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,15 +54,25 @@ public class EmployeeResource
 
     @GET
     @Path("/{id}/{fechaini}/{fechaFin}")
-    public Map<String, Object> getHoursByEmployeeandDates(String id,String fechaIni, String fechaFin) {
+    public Map<String, Object> getHoursByEmployeeandDates(String id,String fechaini, String fechaFin) throws ParseException {
         Map<String, Object> hours = new HashMap<>();
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date dateIni = simpleDateFormat.parse(fechaini);
+        Date dateFin = simpleDateFormat.parse(fechaFin);
         List<EmployeeWorkedHours> list = serviceWH.getWorkedHoursByEmpId(Long.parseLong(id));
         int totalHors = list.stream().
-        filter(c -> c.getWorked_date().after(new Date(fechaIni))).
-                filter(c -> c.getWorked_date().before(new Date(fechaFin))).
+        filter(c -> c.getWorked_date().after(dateIni)).
+                filter(c -> c.getWorked_date().before(dateFin)).
                 mapToInt(o -> o.getWorked_hours()).sum();
         hours.put("total_worked_hours",totalHors);
-        hours.put("success",true);
+        if (totalHors > 5){
+            hours.put("success",true);
+        }else{
+            hours.put("success",false);
+        }
+
+
         return hours;
 
     }
